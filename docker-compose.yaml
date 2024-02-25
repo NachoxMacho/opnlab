@@ -1,0 +1,32 @@
+services:
+  platform:
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./sqlite.db:/app/sqlite.db
+    develop:
+      watch:
+        - action: rebuild
+          path: ./
+          ignore:
+            - "sqlite.db"
+    ports:
+      - 42069:42069
+    environment:
+      REDIS_URL: redis://redis:6379
+      DB_PATH: /app/sqlite.db
+    networks:
+      - platform
+    depends_on:
+      - redis
+  redis:
+    image: redis:latest
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    expose:
+      - 6379
+    networks:
+      - platform
+networks:
+  platform:
+    name: 'platform_development'
