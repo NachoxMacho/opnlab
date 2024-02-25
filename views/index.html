@@ -1,13 +1,1 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    {{ template "dependencies" . }}
-</head>
-
-<body _="on click add .hidden to <div.dropdown-content />">
-    {{ template "tabbar" . }}
-    <div id="apps-table" hx-get="/portal/overview/apps" hx-trigger="load" hx-swap="outerHTML"></div>
-</body>
-
-</html>
+<div id="vms-table" hx-get="/portal/overview/vms" hx-trigger="load" hx-swap="outerHTML"></div>
