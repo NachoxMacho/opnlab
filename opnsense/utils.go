@@ -9,7 +9,7 @@ import (
 )
 
 type OPNSenseResponse interface {
-	DHCPLease
+	DHCPLease | Interface
 }
 
 func getOPNSenseData[ResponseType OPNSenseResponse](path string) ([]ResponseType, error) {

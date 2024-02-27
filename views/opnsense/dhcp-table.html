@@ -1,0 +1,127 @@
+<div id="dhcp-table" class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <h1 class="text-base font-semibold leading-6 text-gray-900">IP Information</h1>
+            <p class="mt-2 text-sm text-gray-700">General IP Information from OPNSense</p>
+            <p class="mt-2 text-sm text-gray-700">Next Available IP: {{ .NextIP }}</p>
+        </div>
+    </div>
+    <div class="mt-8 flow-root">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                <table class="min-w-full divide-y divide-gray-300">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="relative px-7 sm:w-12 sm:px-6">
+                                <input type="checkbox"
+                                    class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                            </th>
+                            <th scope="col"
+                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                                <div class="group inline-flex">
+                                    Address
+                                    <span hx-get="/portal/overview/opnsense?sort=address&order={{ if or .Descending (ne .SortType "address") }}asc{{ else }}desc{{ end }}" hx-swap="outerHTML" hx-target="#dhcp-table" hx-select="#dhcp-table"
+                                        {{ if eq .SortType "address" }}
+                                        class="ml-2 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200 cursor-pointer"
+                                        {{ else }}
+                                        class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible cursor-pointer"
+                                        {{ end }}>
+                                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" {{ if ne
+                                            .SortType "address" }} aria-hidden="true" {{ end }}>
+                                            {{ if and .Descending (eq .SortType "address") }}
+                                            <path fill-rule="evenodd" d="M9.47 6.47a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 1 1-1.06 1.06L10 8.06l-3.72 3.72a.75.75 0 0 1-1.06-1.06l4.25-4.25Z" clip-rule="evenodd" />
+                                            {{ else }}
+                                            <path fill-rule="evenodd"
+                                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                                clip-rule="evenodd" />
+                                            {{ end }}
+                                        </svg>
+                                    </span>
+                                </div>
+
+                            </th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                <div class="group inline-flex">
+                                    Hostname
+                                    <span hx-get="/portal/overview/opnsense?sort=hostname&order={{ if or .Descending (ne .SortType "hostname") }}asc{{ else }}desc{{ end }}" hx-swap="outerHTML" hx-target="#dhcp-table" hx-select="#dhcp-table"
+                                        {{ if eq .SortType "hostname" }}
+                                        class="ml-2 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200 cursor-pointer"
+                                        {{ else }}
+                                        class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible cursor-pointer"
+                                        {{ end }}>
+                                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" {{ if ne
+                                            .SortType "hostname" }} aria-hidden="true" {{ end }}>
+                                            {{ if and .Descending (eq .SortType "hostname") }}
+                                            <path fill-rule="evenodd" d="M9.47 6.47a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 1 1-1.06 1.06L10 8.06l-3.72 3.72a.75.75 0 0 1-1.06-1.06l4.25-4.25Z" clip-rule="evenodd" />
+                                            {{ else }}
+                                            <path fill-rule="evenodd"
+                                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                                clip-rule="evenodd" />
+                                            {{ end }}
+                                        </svg>
+                                    </span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                <div class="group inline-flex">
+                                    MAC Address
+                                    <span hx-get="/portal/overview/opnsense?sort=macaddress&order={{ if or .Descending (ne .SortType "macaddress") }}asc{{ else }}desc{{ end }}" hx-swap="outerHTML" hx-target="#dhcp-table" hx-select="#dhcp-table"
+                                        {{ if eq .SortType "macaddress" }}
+                                        class="ml-2 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200 cursor-pointer"
+                                        {{ else }}
+                                        class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible cursor-pointer"
+                                        {{ end }}>
+                                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" {{ if ne
+                                            .SortType "macaddress" }} aria-hidden="true" {{ end }}>
+                                            {{ if and .Descending (eq .SortType "macaddress") }}
+                                            <path fill-rule="evenodd" d="M9.47 6.47a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 1 1-1.06 1.06L10 8.06l-3.72 3.72a.75.75 0 0 1-1.06-1.06l4.25-4.25Z" clip-rule="evenodd" />
+                                            {{ else }}
+                                            <path fill-rule="evenodd"
+                                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                                clip-rule="evenodd" />
+                                            {{ end }}
+                                        </svg>
+                                    </span>
+                                </div>
+                            </th>
+                            <th scope="col" class="relative py-3.5 pl-3 pr-0">
+                                <span class="sr-only">Edit</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        {{ range .Leases }}
+                        <tr>
+                            <td class="relative px-7 sm:w-12 sm:px-6">
+                                <input type="checkbox"
+                                    class="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                            </td>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                                <div class="flex items-center">
+                                    <div class="ml-4">
+                                        <div class="font-medium text-gray-900">{{ .Address }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                                <div class="flex items-center">
+                                    <div class="ml-4">
+                                        <div class="font-medium text-gray-900">{{ .Hostname }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                                <div class="flex items-center">
+                                    <div class="ml-4">
+                                        <div class="font-medium text-gray-900">{{ .MACAddress }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

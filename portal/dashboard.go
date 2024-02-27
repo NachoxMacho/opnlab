@@ -3,6 +3,7 @@ package portal
 import (
 	"fmt"
 	"slices"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -88,4 +89,48 @@ func vmInfo(c *fiber.Ctx) error {
 	}
 
 	return c.Render("overview/vm-info", fiber.Map{"Data": vm}, "layouts/main")
+}
+
+func dhcpInfo(c *fiber.Ctx) error {
+
+	leases, err := opnsense.GetDHCPLeases()
+	if err != nil {
+		return err
+	}
+
+	sortType := c.Query("sort", "address")
+	descending := c.Query("order", "asc") != "asc"
+
+	switch sortType {
+
+	case "address":
+		sort.Slice(leases, func(i, j int) bool {
+			ip1, err := leases[i].GetIP()
+			if err != nil {
+				return false
+			}
+
+			ip2, err := leases[j].GetIP()
+			if err != nil {
+				return true
+			}
+			return ip1.Compare(ip2) < 0 != descending
+		})
+	case "hostname":
+		sort.Slice(leases, func(i, j int) bool {
+			return strings.ToLower(leases[i].Hostname) < strings.ToLower(leases[j].Hostname) != descending
+		})
+
+	case "macaddress":
+		sort.Slice(leases, func(i, j int) bool {
+			return strings.ToLower(leases[i].MACAddress) < strings.ToLower(leases[j].MACAddress) != descending
+		})
+	}
+
+	nextIP, err := opnsense.GetNextAvailableIP()
+	if err != nil {
+		return err
+	}
+
+	return c.Render("opnsense/dhcp-table", fiber.Map{"Leases": leases, "NextIP": nextIP.String(), "SortType": sortType, "Descending": descending}, "layouts/main")
 }
