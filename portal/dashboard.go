@@ -48,6 +48,7 @@ func vmTable(c *fiber.Ctx) error {
 		MACAddress    string
 		IPAddress     string
 		ID            string
+		Tags          []string
 	}
 	outputVMs := []VMOutputData{}
 	for _, vm := range vms {
@@ -62,6 +63,7 @@ func vmTable(c *fiber.Ctx) error {
 			CurrentCPU:    fmt.Sprintf("%f%%", vm.Stats.CPU*100),
 			MACAddress:    vm.Config.MACAddress(),
 			IPAddress:     "",
+			Tags:          vm.Config.TagList(),
 		}
 
 		for _, lease := range leases {

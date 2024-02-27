@@ -17,10 +17,15 @@ type APIVMConfig struct {
 	IDE2    string `json:"ide2"`
 	SMBIOS1 string `json:"smbios1"`
 	Boot    string `json:"boot"`
+	Tags    string `json:"tags"`
 }
 
 func (vm APIVMConfig) MACAddress() string {
 	virtio := strings.Split(vm.Net0, ",")[0]
 
 	return strings.Split(virtio, "=")[1]
+}
+
+func (vm APIVMConfig) TagList() []string {
+	return strings.Split(vm.Tags, ";")
 }
