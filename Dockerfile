@@ -20,7 +20,6 @@ COPY --from=build-stage /docker-go /app/docker-go
 
 COPY ./views /app/views
 COPY ./css /app/css
-COPY ./migrations /app/migrations
 
 EXPOSE 42069
 
