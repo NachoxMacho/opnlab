@@ -14,7 +14,11 @@ services:
       - 42069:42069
     environment:
       REDIS_URL: redis://redis:6379
-      DB_PATH: /app/sqlite.db
+      PVE_TOKEN: <user@pve!id=secret>
+      PVE_BASE_URL: 'proxmox...:8006'
+      OPNSENSE_API_KEY: <API-KEY>
+      OPNSENSE_API_SECRET: <API-SECRET>
+      OPNSENSE_BASE_URL: 192.168.1.1
     networks:
       - platform
     depends_on:
