@@ -3,6 +3,7 @@ package opnsense
 import (
 	"net"
 	"net/netip"
+	"strings"
 )
 
 type DHCPLease struct {
@@ -70,4 +71,15 @@ type InterfaceConfig struct {
 	MediaOption          string `json:"mediaopt"`
 	DHCPv6               string `json:"dhcp6-ia-pd-len"`
 	Identifier           string `json:"identifier"`
+}
+
+func (i *Interface) SubnetIPv4() (netip.Prefix, error) {
+	for _, ip := range i.IPv4 {
+		if strings.HasSuffix(ip.IPAddress, "32") {
+			continue
+		}
+
+		return netip.ParsePrefix(ip.IPAddress)
+	}
+	return netip.Prefix{}, nil
 }
