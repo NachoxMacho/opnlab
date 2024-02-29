@@ -202,4 +202,12 @@ func getNewIP(subnet netip.Prefix, usedIPs []netip.Addr, randomize bool) netip.A
 	return unusedIPs[randIndex]
 }
 
+func interfacesOverview(c *fiber.Ctx) error {
+
+	interfaces, err := opnsense.GetInterfaces()
+	if err != nil {
+		return err
+	}
+
+	return c.Render("opnsense/interface", fiber.Map{"Interfaces": interfaces}, "layouts/main")
 }
