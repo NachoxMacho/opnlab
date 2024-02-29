@@ -1,13 +1,11 @@
 package portal
 
 import (
-	"fmt"
 	"math"
 	"strconv"
 )
 
 func HumanFileSize(size float64) string {
-	fmt.Println(size)
 	suffixes := []string{
 		"B",
 		"KB",
@@ -22,7 +20,6 @@ func HumanFileSize(size float64) string {
 
 	base := math.Log(size) / math.Log(1024)
 	getSize := Round(math.Pow(1024, base-math.Floor(base)), .5, 2)
-	fmt.Println(int(math.Floor(base)))
 	getSuffix := suffixes[int(math.Floor(base))]
 	return strconv.FormatFloat(getSize, 'f', -1, 64) + " " + string(getSuffix)
 }

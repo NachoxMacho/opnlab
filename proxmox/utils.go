@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -16,7 +15,7 @@ func getProxmoxData[ResponseType ProxmoxResponses](path string) (ResponseType, e
 
 	var resp ResponseType
 
-	log.Println("https://" + proxmoxURL + "/api2/json" + path)
+	// log.Println("https://" + proxmoxURL + "/api2/json" + path)
 	request, err := http.NewRequest("GET", "https://"+proxmoxURL+"/api2/json"+path, nil)
 	if err != nil {
 		return resp, err

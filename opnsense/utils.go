@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -14,7 +13,7 @@ type OPNSenseResponse interface {
 
 func getOPNSenseData[ResponseType OPNSenseResponse](path string) ([]ResponseType, error) {
 
-	log.Println("https://" + opnsenseURL + "/api" + path)
+	// log.Println("https://" + opnsenseURL + "/api" + path)
 	request, err := http.NewRequest("GET", "https://"+opnsenseURL+"/api"+path, nil)
 	if err != nil {
 		return nil, err
