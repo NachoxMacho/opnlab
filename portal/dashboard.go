@@ -2,6 +2,9 @@ package portal
 
 import (
 	"fmt"
+	"log"
+	"math/rand"
+	"net/netip"
 	"slices"
 	"sort"
 	"strconv"
@@ -129,10 +132,74 @@ func dhcpInfo(c *fiber.Ctx) error {
 		})
 	}
 
-	nextIP, err := opnsense.GetNextAvailableIP()
+	interfaces, err := opnsense.GetInterfaces()
 	if err != nil {
 		return err
 	}
 
-	return c.Render("opnsense/dhcp-table", fiber.Map{"Leases": leases, "NextIP": nextIP.String(), "SortType": sortType, "Descending": descending}, "layouts/main")
+	usedIPs := []netip.Addr{}
+	for _, lease := range leases {
+		ip, err := lease.GetIP()
+		if err != nil {
+			return err
+		}
+		usedIPs = append(usedIPs, ip)
+	}
+
+	nextIPs := []string{}
+	for _, i := range interfaces {
+		if i.Status == "down" {
+			continue
+		}
+		if i.Status == "no carrier" {
+			continue
+		}
+		if i.Device == "igb0" {
+			continue
+		}
+		if strings.HasPrefix(i.Device, "lo") {
+			continue
+		}
+
+		subnet, err := i.SubnetIPv4()
+		if err != nil {
+			return err
+		}
+		nextIP := getNewIP(subnet, usedIPs, true)
+		nextIPs = append(nextIPs, i.Description+": "+nextIP.String())
+	}
+
+	return c.Render("opnsense/dhcp-table", fiber.Map{"Leases": leases, "NextIP": nextIPs, "SortType": sortType, "Descending": descending}, "layouts/main")
+}
+
+func getNewIP(subnet netip.Prefix, usedIPs []netip.Addr, randomize bool) netip.Addr {
+
+	if subnet.IsSingleIP() {
+		return subnet.Addr()
+	}
+
+	unusedIPs := []netip.Addr{}
+	for ip := subnet.Addr(); subnet.Contains(ip); ip = ip.Next() {
+		if slices.Index(usedIPs, ip) != -1 {
+			continue
+		}
+
+		if !randomize {
+			return ip
+		}
+
+		unusedIPs = append(unusedIPs, ip)
+	}
+
+	if len(unusedIPs) == 0 {
+		return netip.Addr{}
+	}
+
+	log.Println("UnusedIPs:" + fmt.Sprintf("%d", len(unusedIPs)))
+
+	randIndex := rand.Intn(len(unusedIPs))
+
+	return unusedIPs[randIndex]
+}
+
 }
