@@ -53,7 +53,7 @@ func vmTable(c *fiber.Ctx) error {
 		ID            string
 		Tags          []string
 	}
-	outputVMs := []VMOutputData{}
+	outputVMs := make([]VMOutputData,0,len(vms))
 	for _, vm := range vms {
 		o := VMOutputData{
 			ID:            fmt.Sprintf("%d", vm.Stats.VMID),
