@@ -27,12 +27,7 @@ func vmTable(c *fiber.Ctx) error {
 		return err
 	}
 	slices.SortStableFunc(vms, func(a, b proxmox.VM) int {
-		if a.Config.Name > b.Config.Name {
-			return 1
-		} else if a.Config.Name < b.Config.Name {
-			return -1
-		}
-		return 0
+		return strings.Compare(a.Config.Name, b.Config.Name)
 	})
 
 	leases, err := opnsense.GetDHCPLeases()
