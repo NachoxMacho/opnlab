@@ -23,8 +23,7 @@ func GetNextAvailableIP() (netip.Addr, error) {
 
 	for ip := startIP; ip.Compare(netip.Addr{}) != 0; ip = ip.Next() {
 		index := slices.IndexFunc(leases, func(d DHCPLease) bool {
-			addr, _ := d.GetIP()
-			return ip.Compare(addr) == 0
+			return ip.Compare(d.Address) == 0
 		})
 		if index == -1 {
 			return ip, nil
