@@ -1,36 +1,9 @@
 package opnsense
 
 import (
-	"net"
 	"net/netip"
 	"strings"
 )
-
-type DHCPLease struct {
-	Address        string `json:"address"`
-	Starts         string `json:"starts"`
-	Ends           string `json:"ends"`
-	CLTT           string `json:"cltt"`
-	Binding        string `json:"binding"`
-	ClientHostname string `json:"client-hostname"`
-	Type           string `json:"type"`
-	Status         string `json:"status"`
-	Description    string `json:"descr"`
-	MACAddress     string `json:"mac"`
-	Hostname       string `json:"hostname"`
-	State          string `json:"state"`
-	Man            string `json:"man"`
-	If             string `json:"if"`
-	IfDescription  string `json:"if_descr"`
-}
-
-func (l *DHCPLease) GetIP() (netip.Addr, error) {
-	return netip.ParseAddr(l.Address)
-}
-
-func (l *DHCPLease) GetMACAddress() (net.HardwareAddr, error) {
-	return net.ParseMAC(l.MACAddress)
-}
 
 type Interface struct {
 	Flags          []string             `json:"flags"`
