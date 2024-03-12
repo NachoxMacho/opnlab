@@ -159,12 +159,15 @@ func dhcpInfo(c *fiber.Ctx) error {
 func getNewIP(subnet netip.Prefix, usedIPs []netip.Addr, randomize bool) netip.Addr {
 
 	if subnet.IsSingleIP() {
-		return subnet.Addr()
+		if slices.Contains(usedIPs, subnet.Addr()) {
+			return subnet.Addr()
+		}
+		return netip.Addr{}
 	}
 
 	unusedIPs := []netip.Addr{}
 	for ip := subnet.Addr(); subnet.Contains(ip); ip = ip.Next() {
-		if slices.Index(usedIPs, ip) != -1 {
+		if slices.Contains(usedIPs, ip) {
 			continue
 		}
 
