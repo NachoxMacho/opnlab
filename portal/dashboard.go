@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"net/netip"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -36,41 +35,39 @@ func vmTable(c *fiber.Ctx) error {
 	}
 
 	type VMOutputData struct {
-		Name          string
-		Status        string
-		MaxMemory     string
-		MaxCPUs       string
-		CurrentMemory string
-		CurrentCPU    string
-		MaxDisk       string
-		MACAddress    string
-		IPAddress     string
-		ID            string
-		Tags          []string
+		Name          string   `json:"name,omitempty"`
+		Status        string   `json:"status,omitempty"`
+		MaxMemory     string   `json:"max_memory,omitempty"`
+		MaxCPUs       string   `json:"max_cp_us,omitempty"`
+		CurrentMemory string   `json:"current_memory,omitempty"`
+		CurrentCPU    string   `json:"current_cpu,omitempty"`
+		MaxDisk       string   `json:"max_disk,omitempty"`
+		MACAddress    string   `json:"mac_address,omitempty"`
+		IPAddress     string   `json:"ip_address,omitempty"`
+		ID            string   `json:"id,omitempty"`
+		Tags          []string `json:"tags,omitempty"`
 	}
-	outputVMs := make([]VMOutputData,0,len(vms))
-	for _, vm := range vms {
-		o := VMOutputData{
-			ID:            fmt.Sprintf("%d", vm.Stats.VMID),
-			Name:          vm.Config.Name,
-			Status:        vm.Stats.Status,
-			MaxCPUs:       fmt.Sprintf("%d", vm.Stats.CPUs),
-			CurrentMemory: HumanFileSize(float64(vm.Stats.Memory)),
-			MaxMemory:     HumanFileSize(float64(vm.Stats.MaxMemory)),
-			MaxDisk:       HumanFileSize(float64(vm.Stats.MaxDiskBytes)),
-			CurrentCPU:    fmt.Sprintf("%f%%", vm.Stats.CPU*100),
-			MACAddress:    vm.Config.MACAddress(),
-			IPAddress:     "",
-			Tags:          vm.Config.TagList(),
-		}
+	outputVMs := make([]VMOutputData, 0, len(vms))
+	for i, vm := range vms {
+		outputVMs[i].ID = fmt.Sprintf("%d", vm.Stats.VMID)
+
+		outputVMs[i].ID = fmt.Sprintf("%d", vm.Stats.VMID)
+		outputVMs[i].Name = vm.Config.Name
+		outputVMs[i].Status = vm.Stats.Status
+		outputVMs[i].MaxCPUs = fmt.Sprintf("%d", vm.Stats.CPUs)
+		outputVMs[i].CurrentMemory = HumanFileSize(float64(vm.Stats.Memory))
+		outputVMs[i].MaxMemory = HumanFileSize(float64(vm.Stats.MaxMemory))
+		outputVMs[i].MaxDisk = HumanFileSize(float64(vm.Stats.MaxDiskBytes))
+		outputVMs[i].CurrentCPU = fmt.Sprintf("%f%%", vm.Stats.CPU*100)
+		outputVMs[i].MACAddress = vm.Config.MACAddress()
+		outputVMs[i].IPAddress = ""
+		outputVMs[i].Tags = vm.Config.TagList()
 
 		for _, lease := range leases {
-			if strings.EqualFold(lease.MACAddress, vm.Config.MACAddress()) {
-				o.IPAddress = lease.Address
+			if strings.EqualFold(lease.MAC.String(), vm.Config.MACAddress()) {
+				outputVMs[i].IPAddress = lease.Address.String()
 			}
 		}
-
-		outputVMs = append(outputVMs, o)
 	}
 	return c.Render("overview/vm-table", fiber.Map{"VMs": outputVMs})
 }
