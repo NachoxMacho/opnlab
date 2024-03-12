@@ -107,29 +107,22 @@ func dhcpInfo(c *fiber.Ctx) error {
 	descending := c.Query("order", "asc") != "asc"
 
 	switch sortType {
-
 	case "address":
-		sort.Slice(leases, func(i, j int) bool {
-			ip1, err := leases[i].GetIP()
-			if err != nil {
-				return false
-			}
-
-			ip2, err := leases[j].GetIP()
-			if err != nil {
-				return true
-			}
-			return ip1.Compare(ip2) < 0 != descending
+		slices.SortStableFunc(leases, func(a, b opnsense.DHCPLease) int {
+			return a.Address.Compare(b.Address)
 		})
 	case "hostname":
-		sort.Slice(leases, func(i, j int) bool {
-			return strings.ToLower(leases[i].Hostname) < strings.ToLower(leases[j].Hostname) != descending
+		slices.SortStableFunc(leases, func(a, b opnsense.DHCPLease) int {
+			return strings.Compare(strings.ToLower(a.Hostname), strings.ToLower(b.Hostname))
 		})
-
 	case "macaddress":
-		sort.Slice(leases, func(i, j int) bool {
-			return strings.ToLower(leases[i].MACAddress) < strings.ToLower(leases[j].MACAddress) != descending
+		slices.SortStableFunc(leases, func(a, b opnsense.DHCPLease) int {
+			return strings.Compare(a.MAC.String(), b.MAC.String())
 		})
+	}
+
+	if descending {
+		slices.Reverse(leases)
 	}
 
 	interfaces, err := opnsense.GetInterfaces()
@@ -137,16 +130,12 @@ func dhcpInfo(c *fiber.Ctx) error {
 		return err
 	}
 
-	usedIPs := []netip.Addr{}
-	for _, lease := range leases {
-		ip, err := lease.GetIP()
-		if err != nil {
-			return err
-		}
-		usedIPs = append(usedIPs, ip)
+	usedIPs := make([]netip.Addr, len(leases))
+	for i, lease := range leases {
+		usedIPs[i] = lease.Address
 	}
 
-	nextIPs := []string{}
+	nextIPs := make([]string, 0, len(interfaces))
 	for _, i := range interfaces {
 		if i.Status == "down" {
 			continue
