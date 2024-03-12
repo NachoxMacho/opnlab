@@ -52,6 +52,9 @@ func getOPNSenseData[ResponseType OPNSenseResponse](path string) ([]ResponseType
 	}
 
 	res := OPNSenseData{}
-	json.Unmarshal(bodyBytes, &res)
+	err = json.Unmarshal(bodyBytes, &res)
+	if err != nil {
+		return nil, err
+	}
 	return res.Rows, nil
 }
