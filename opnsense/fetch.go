@@ -3,6 +3,7 @@ package opnsense
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -19,7 +20,7 @@ func Fetch(client *redis.Client) error {
 		return err
 	}
 
-	client.Set(context.Background(), "leases", leasesEncoding, 0)
+	client.Set(context.Background(), "leases", leasesEncoding, 5*time.Minute)
 
 	return nil
 }
