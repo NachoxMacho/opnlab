@@ -1,9 +1,10 @@
 package main
 
 import (
-	"context"
+	// "context"
 	"log"
 	"os"
+	"time"
 
 	// "github.com/NachoxMacho/opnlab/database"
 	"github.com/NachoxMacho/opnlab/opnsense"
@@ -19,6 +20,7 @@ import (
 
 func main() {
 
+	var err error
 	godotenv.Load()
 	// Run any migrations and by extension test database connection
 	// if err := database.Initialize(); err != nil {
@@ -31,23 +33,37 @@ func main() {
 		DB:       0,
 	})
 
-	err := redisClient.Set(context.Background(), "key", "value", 0).Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	val, err := redisClient.Get(context.Background(), "key").Result()
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println(val)
-
 	err = proxmox.InitalizeConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	err = opnsense.InitalizeConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	opnsenseTicker := time.Tick(30 * time.Second)
+	proxmoxTicker := time.Tick(30 * time.Second)
+
+	go func() {
+		for range opnsenseTicker {
+			_ = opnsense.Fetch(redisClient)
+		}
+	}()
+
+	go func() {
+		for range proxmoxTicker {
+			_ = proxmox.Fetch(redisClient)
+		}
+	}()
+
+	err = opnsense.Fetch(redisClient)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = proxmox.Fetch(redisClient)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,19 +1,19 @@
 package proxmox
 
 type APINode struct {
-	Status string `json:"status"`
-	Name   string `json:"node"`
+	Status string `json:"status" redis:"status"`
+	Name   string `json:"node" redis:"name"`
 	// Size of the disk in bytes
-	Disk           int     `json:"disk"`
-	CPU            float32 `json:"cpu"`
-	MaxCPU         int     `json:"maxcpu"`
-	Level          string  `json:"level"`
-	ID             string  `json:"id"`
-	SSLFingerprint string  `json:"ssl_fingerprint"`
-	Uptime         int     `json:"uptime"`
-	Type           string  `json:"type"`
-	MaxDiskBytes   int     `json:"maxdisk"`
-	Memory         int     `json:"mem"`
+	Disk           int     `json:"disk" redis:"disk"`
+	CPU            float32 `json:"cpu" redis:"cpu"`
+	MaxCPU         int     `json:"maxcpu" redis:"maxcpu"`
+	Level          string  `json:"level" redis:"level"`
+	ID             string  `json:"id" redis:"id"`
+	SSLFingerprint string  `json:"ssl_fingerprint" redis:"ssl_fingerprint"`
+	Uptime         int     `json:"uptime" redis:"uptime"`
+	Type           string  `json:"type" redis:"type"`
+	MaxDiskBytes   int     `json:"maxdisk" redis:"maxdisk"`
+	Memory         int     `json:"mem" redis:"memory"`
 }
 
 type VM struct {

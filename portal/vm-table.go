@@ -1,11 +1,15 @@
 package portal
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
+	"os"
 	"slices"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/NachoxMacho/opnlab/opnsense"
 	"github.com/NachoxMacho/opnlab/proxmox"
@@ -13,18 +17,34 @@ import (
 
 func vmTable(c *fiber.Ctx) error {
 
-	vms, err := proxmox.GetVMs()
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_URL"),
+		Password: "",
+		DB:       0,
+	})
+
+	var leases []opnsense.DHCPLease
+	result, err := redisClient.Get(context.Background(), "leases").Result()
 	if err != nil {
 		return err
 	}
+	err = json.Unmarshal([]byte(result), &leases)
+	if err != nil {
+		return err
+	}
+	var vms []proxmox.VM
+	result, err = redisClient.Get(context.Background(), "vms").Result()
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal([]byte(result), &vms)
+	if err != nil {
+		return err
+	}
+
 	slices.SortStableFunc(vms, func(a, b proxmox.VM) int {
 		return strings.Compare(a.Config.Name, b.Config.Name)
 	})
-
-	leases, err := opnsense.GetDHCPLeases()
-	if err != nil {
-		return err
-	}
 
 	type VMOutputData struct {
 		Name          string   `json:"name,omitempty"`
@@ -56,7 +76,7 @@ func vmTable(c *fiber.Ctx) error {
 		outputVMs[i].Tags = vm.Config.TagList()
 
 		for _, lease := range leases {
-			if strings.EqualFold(lease.MAC.String(), vm.Config.MACAddress()) {
+			if strings.EqualFold(lease.MAC, vm.Config.MACAddress()) {
 				outputVMs[i].IPAddress = lease.Address.String()
 			}
 		}

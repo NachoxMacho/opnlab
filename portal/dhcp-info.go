@@ -34,7 +34,7 @@ func dhcpInfo(c *fiber.Ctx) error {
 		})
 	case "macaddress":
 		slices.SortStableFunc(leases, func(a, b opnsense.DHCPLease) int {
-			return strings.Compare(a.MAC.String(), b.MAC.String())
+			return strings.Compare(a.MAC, b.MAC)
 		})
 	}
 
