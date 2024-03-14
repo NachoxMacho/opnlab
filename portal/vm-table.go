@@ -70,7 +70,7 @@ func vmTable(c *fiber.Ctx) error {
 		outputVMs[i].CurrentMemory = HumanFileSize(float64(vm.Stats.Memory))
 		outputVMs[i].MaxMemory = HumanFileSize(float64(vm.Stats.MaxMemory))
 		outputVMs[i].MaxDisk = HumanFileSize(float64(vm.Stats.MaxDiskBytes))
-		outputVMs[i].CurrentCPU = fmt.Sprintf("%f%%", vm.Stats.CPU*100)
+		outputVMs[i].CurrentCPU = fmt.Sprintf("%.2f%%", vm.Stats.CPU*100)
 		outputVMs[i].MACAddress = vm.Config.MACAddress()
 		outputVMs[i].IPAddress = ""
 		outputVMs[i].Tags = vm.Config.TagList()
