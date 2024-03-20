@@ -5,17 +5,29 @@ import (
 	"log"
 	"math/rand"
 	"net/netip"
+	"os"
 	"slices"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/NachoxMacho/opnlab/opnsense"
 )
 
+func dhcpOverview(c *fiber.Ctx) error {
+	return c.Render("opnsense/dhcp-overview", fiber.Map{}, "layouts/main")
+}
+
 func dhcpInfo(c *fiber.Ctx) error {
 
-	leases, err := opnsense.GetDHCPLeases()
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_URL"),
+		Password: "",
+		DB:       0,
+	})
+
+	leases, err := getObjectsFromCache[opnsense.DHCPLease](redisClient, "leases")
 	if err != nil {
 		return err
 	}
@@ -42,40 +54,7 @@ func dhcpInfo(c *fiber.Ctx) error {
 		slices.Reverse(leases)
 	}
 
-	interfaces, err := opnsense.GetInterfaces()
-	if err != nil {
-		return err
-	}
-
-	usedIPs := make([]netip.Addr, len(leases))
-	for i, lease := range leases {
-		usedIPs[i] = lease.Address
-	}
-
-	nextIPs := make([]string, 0, len(interfaces))
-	for _, i := range interfaces {
-		if i.Status == "down" {
-			continue
-		}
-		if i.Status == "no carrier" {
-			continue
-		}
-		if i.Device == "igb0" {
-			continue
-		}
-		if strings.HasPrefix(i.Device, "lo") {
-			continue
-		}
-
-		subnet, err := i.SubnetIPv4()
-		if err != nil {
-			return err
-		}
-		nextIP := getNewIP(subnet, usedIPs, true)
-		nextIPs = append(nextIPs, i.Description+": "+nextIP.String())
-	}
-
-	return c.Render("opnsense/dhcp-table", fiber.Map{"Leases": leases, "NextIP": nextIPs, "SortType": sortType, "Descending": descending}, "layouts/main")
+	return c.Render("opnsense/dhcp-table", fiber.Map{"Leases": leases, "SortType": sortType, "Descending": descending})
 }
 
 func getNewIP(subnet netip.Prefix, usedIPs []netip.Addr, randomize bool) netip.Addr {

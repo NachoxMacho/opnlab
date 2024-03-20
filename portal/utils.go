@@ -1,8 +1,12 @@
 package portal
 
 import (
+	"context"
+	"encoding/json"
 	"math"
 	"strconv"
+
+	"github.com/redis/go-redis/v9"
 )
 
 func HumanFileSize(size float64) string {
@@ -36,4 +40,18 @@ func Round(val float64, roundOn float64, places int) (newVal float64) {
 	}
 	newVal = round / pow
 	return
+}
+
+func getObjectsFromCache[T any](client *redis.Client, key string) ([]T, error) {
+	var objs []T
+	result, err := client.Get(context.Background(), key).Result()
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal([]byte(result), &objs)
+	if err != nil {
+		return nil, err
+	}
+
+	return objs, nil
 }
