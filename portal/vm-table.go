@@ -62,8 +62,6 @@ func vmTable(c *fiber.Ctx) error {
 	outputVMs := make([]VMOutputData, len(vms))
 	for i, vm := range vms {
 		outputVMs[i].ID = fmt.Sprintf("%d", vm.Stats.VMID)
-
-		outputVMs[i].ID = fmt.Sprintf("%d", vm.Stats.VMID)
 		outputVMs[i].Name = vm.Config.Name
 		outputVMs[i].Status = vm.Stats.Status
 		outputVMs[i].MaxCPUs = fmt.Sprintf("%d", vm.Stats.CPUs)
