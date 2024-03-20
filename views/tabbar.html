@@ -9,12 +9,11 @@
       </button>
     </div>
     <div class="hidden lg:flex lg:gap-x-12">
-    <a href="#" class="text-sm font-semibold leading-7 text-gray-900">Home</a>
-    <a href="#" class="text-sm font-semibold leading-7 text-gray-900">Access</a>
+    <a href="/portal/overview" class="text-sm font-semibold leading-7 text-gray-900">Home</a>
     <a href="#" class="text-sm font-semibold leading-7 text-gray-900">Apps</a>
       <div class="relative">
-        <button type="button" _="on click if #scanner-dropdown-content match .hidden then add .hidden to .dropdown-content then toggle .hidden on #scanner-dropdown-content else add .hidden to .dropdown-content end then halt the event bubbling" class="dropdown flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900" aria-expanded="false">
-          Scanner
+        <button type="button" _="on click if #proxmox-dropdown-content match .hidden then add .hidden to .dropdown-content then toggle .hidden on #proxmox-dropdown-content else add .hidden to .dropdown-content end then halt the event bubbling" class="dropdown flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900" aria-expanded="false">
+          Proxmox
           <svg class="h-5 w-5 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
           </svg>
@@ -31,7 +30,7 @@
             To: "opacity-0 translate-y-1"
             test
         -->
-        <div id="scanner-dropdown-content" class="dropdown-content hidden">
+        <div id="proxmox-dropdown-content" class="dropdown-content hidden">
         <div class="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
           <div class="p-4">
             <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
@@ -42,11 +41,11 @@
                 </svg>
               </div>
               <div class="flex-auto">
-                <a href="/portal/scanner/assets" class="block font-semibold text-gray-900">
-                  Assets
+                <a href="/portal/proxmox/overview" class="block font-semibold text-gray-900">
+                  Overview
                   <span class="absolute inset-0"></span>
                 </a>
-                <p class="mt-1 text-gray-600">View all servers to scan</p>
+                <p class="mt-1 text-gray-600">View overview of vm information</p>
               </div>
             </div>
             <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
@@ -66,10 +65,9 @@
         </div>
       </div>
 
-      <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Cert Manager</a>
       <div class="relative">
         <button type="button" _="on click if #admin-dropdown-content match .hidden then add .hidden to .dropdown-content then toggle .hidden on #admin-dropdown-content else add .hidden to .dropdown-content end then halt the event bubbling" class="dropdown flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900" aria-expanded="false">
-          Admin
+          OPNSense
           <svg class="h-5 w-5 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
           </svg>
@@ -97,8 +95,8 @@
                 </svg>
               </div>
               <div class="flex-auto">
-                <a href="/portal/admin/overview" class="block font-semibold text-gray-900">
-                  Overview
+                <a href="/portal/opnsense/dhcp" class="block font-semibold text-gray-900">
+                  DHCP Leases
                   <span class="absolute inset-0"></span>
                 </a>
                 <p class="mt-1 text-gray-600">Get a better understanding of your traffic</p>

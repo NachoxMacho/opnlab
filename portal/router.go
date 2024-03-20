@@ -6,10 +6,10 @@ import (
 
 func RegisterRoutes(group fiber.Router) error {
 
-	group.Get("/", dashboard)
-	group.Get("/overview/vms", vmTable)
-	group.Get("/overview/vm/:id", vmInfo)
-	group.Get("/overview/opnsense", dhcpInfo)
+	group.Get("/proxmox/overview", dashboard)
+	group.Get("/proxmox/overview/vms", vmTable)
+	group.Get("/proxmox/vm/:id", vmInfo)
+	group.Get("/opnsense/dhcp", dhcpInfo)
 
 	return nil
 }

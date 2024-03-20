@@ -7,7 +7,7 @@ import (
 )
 
 func dashboard(c *fiber.Ctx) error {
-	return c.Render("index", fiber.Map{}, "layouts/main")
+	return c.Render("proxmox/overview", fiber.Map{}, "layouts/main")
 }
 
 func interfacesOverview(c *fiber.Ctx) error {
